@@ -1,3 +1,18 @@
+const Space = () => {
+    let value = " ";
+
+    const getValue = () => value;
+
+    const addMark = (player) => {
+        if (value === " ") {
+            value = player.symbol;
+        };
+    };
+
+    return { getValue, addMark };
+};
+
+
 const Gameboard = (() => {
     const board = [];
     for (let i = 0; i < 9; i++) {
@@ -13,19 +28,6 @@ const Gameboard = (() => {
     return { getBoard, markSpace };
 })();
 
-const Space = () => {
-    let value = " ";
-
-    const getValue = () => value;
-
-    const addMark = (player) => {
-        if (value === " ") {
-            value = player.symbol;
-        };
-    };
-
-    return { getValue, addMark };
-};
 
 const Player = (symbol) => {
 
@@ -55,5 +57,22 @@ const GameController = (() => {
 })();
 
 const DisplayController = (() => {
+    const boardDiv = document.querySelector(".board");
 
+    const updateScreen = () => {
+        boardDiv.textContent = "";
+
+        const board = Gameboard.getBoard();
+        const activePlayer = GameController.getActivePlayer();
+
+        board.forEach((space, index) => {
+            const spaceButton = document.createElement("button");
+            spaceButton.classList.add("space");
+            spaceButton.dataset.index = index;
+            spaceButton.textContent = space.getValue();
+            boardDiv.appendChild(spaceButton);
+        });
+    };
+
+    updateScreen();
 })();
