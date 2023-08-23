@@ -3,13 +3,13 @@ const Space = () => {
 
     const getValue = () => value;
 
+    const isOpen = () => value === " ";
+
     const addMark = (player) => {
-        if (value === " ") {
-            value = player.symbol;
-        };
+        value = player.getSymbol();
     };
 
-    return { getValue, addMark };
+    return { getValue, addMark, isOpen };
 };
 
 
@@ -48,7 +48,7 @@ const GameController = (() => {
     };
 
     const playRound = (space) => {
-        Gameboard.markSpace(space, getActivePlayer);
+        Gameboard.markSpace(space, getActivePlayer());
         switchPlayer();
     }
 
@@ -58,6 +58,7 @@ const GameController = (() => {
 
 const DisplayController = (() => {
     const boardDiv = document.querySelector(".board");
+    const activeDiv = document.querySelector(".active");
 
     const updateScreen = () => {
         boardDiv.textContent = "";
@@ -65,13 +66,25 @@ const DisplayController = (() => {
         const board = Gameboard.getBoard();
         const activePlayer = GameController.getActivePlayer();
 
+        activeDiv.textContent = `${activePlayer.getSymbol()}'s turn`
+
         board.forEach((space, index) => {
             const spaceButton = document.createElement("button");
             spaceButton.classList.add("space");
             spaceButton.dataset.index = index;
             spaceButton.textContent = space.getValue();
+            spaceButton.addEventListener("click", clickHandler);
             boardDiv.appendChild(spaceButton);
         });
+    };
+
+    function clickHandler(e) {
+        const board = Gameboard.getBoard();
+        const selectedSpace = board[e.target.dataset.index];
+        if (selectedSpace.isOpen()) {
+            GameController.playRound(selectedSpace);
+            updateScreen();
+        };
     };
 
     updateScreen();
