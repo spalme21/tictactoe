@@ -20,3 +20,7 @@ h1, h2, .board {
     height: 25vh;
     font-size: 4rem;
 }
+
+.winning {
+    color: green;
+}
