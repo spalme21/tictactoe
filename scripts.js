@@ -16,7 +16,12 @@ const Space = () => {
         value = player.getSymbol();
     };
 
-    return { getValue, addMark, isOpen, getWinning, toggleWinning };
+    const reset = () => {
+        value = " ";
+        winning = false;
+    }
+
+    return { getValue, addMark, isOpen, getWinning, toggleWinning, reset };
 };
 
 
@@ -85,22 +90,33 @@ const GameController = (() => {
         };
     };
 
-    return { getActivePlayer, switchPlayer, playRound, checkForWin };
+    const reset = () => {
+        board.forEach((space) => {
+            space.reset();
+        })
+    }
+
+    return { getActivePlayer, switchPlayer, playRound, checkForWin, reset };
 
 })();
 
 const DisplayController = (() => {
     const boardDiv = document.querySelector(".board");
     const activeDiv = document.querySelector(".active");
+    const displayDiv = document.querySelector(".display");
 
     const updateScreen = () => {
         boardDiv.textContent = "";
+        displayDiv.textContent = "";
 
         const board = Gameboard.getBoard();
         const activePlayer = GameController.getActivePlayer();
         const gameOver = GameController.checkForWin();
 
-        activeDiv.textContent = `${activePlayer.getSymbol()}'s turn`
+        const message = document.createElement("h2");
+        message.classList.add("message");
+        message.textContent = `${activePlayer.getSymbol()}'s turn`;
+        displayDiv.appendChild(message);
 
         board.forEach((space, index) => {
             const spaceButton = document.createElement("button");
@@ -115,13 +131,22 @@ const DisplayController = (() => {
         });
 
         if (gameOver) {
-            activeDiv.textContent = `${activePlayer.getSymbol()} wins!`;
+            message.textContent = `${activePlayer.getSymbol()} wins!`;
             const spaces = document.querySelectorAll(".space");
             spaces.forEach((space) => {
                 space.removeEventListener("click", clickHandler);
             })
+            const resetButton = document.createElement("button");
+            resetButton.textContent = "Reset";
+            resetButton.classList.add("reset");
+            resetButton.addEventListener("click", reset);
+            displayDiv.appendChild(resetButton);
         };
     };
+
+    const updateDisplay = () => {
+
+    }
 
     function clickHandler(e) {
         const board = Gameboard.getBoard();
@@ -132,6 +157,11 @@ const DisplayController = (() => {
             updateScreen();
         };
     };
+
+    function reset(e) {
+        GameController.reset();
+        updateScreen();
+    }
 
     updateScreen();
 })();
