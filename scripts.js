@@ -102,7 +102,6 @@ const GameController = (() => {
 
 const DisplayController = (() => {
     const boardDiv = document.querySelector(".board");
-    const activeDiv = document.querySelector(".active");
     const displayDiv = document.querySelector(".display");
 
     const updateScreen = () => {
@@ -143,10 +142,6 @@ const DisplayController = (() => {
             displayDiv.appendChild(resetButton);
         };
     };
-
-    const updateDisplay = () => {
-
-    }
 
     function clickHandler(e) {
         const board = Gameboard.getBoard();
